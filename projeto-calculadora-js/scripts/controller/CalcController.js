@@ -1,6 +1,6 @@
 class CalcController {
 
-    constructor() { // method execute altomaticamente
+    constructor() { // method execute automaticamente
 
         this._locale = "pt-BR";
         this._displayCalcEl = document.querySelector("#display");
