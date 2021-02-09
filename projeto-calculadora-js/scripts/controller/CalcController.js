@@ -1,56 +1,52 @@
 class CalcController {
+    constructor() {
+        // method execute automaticamente
 
-    constructor() { // method execute automaticamente
-
-        this._locale = "pt-BR";
-        this._displayCalcEl = document.querySelector("#display");
-        this._dateEl = document.querySelector("#data");
-        this._timeEl = document.querySelector("#hora");
+        this._locale = 'pt-BR';
+        this._displayCalcEl = document.querySelector('#display');
+        this._dateEl = document.querySelector('#data');
+        this._timeEl = document.querySelector('#hora');
         this._currentDate; // private
         this.initialize();
         this.initButtonsEvents();
-
     }
 
     initialize() {
-
         this.setDisplayDateTime();
 
         setInterval(() => {
-            
-            this.setDisplayDateTime(); 
-
+            this.setDisplayDateTime();
         }, 1000);
-       
+    }
+
+    addEventListenerAll(element, event, fn) {
+        event.split(' ').forEach(event => {
+            element.addEventListener(event, fn, false);
+        });
     }
 
     initButtonsEvents() {
-        
-        let buttons = document.querySelectorAll("#buttons > g, #parts > g");
+        let buttons = document.querySelectorAll('#buttons > g, #parts > g');
 
-        
         buttons.forEach((btn, index) => {
-
-            btn.addEventListener("click", event => {
-
-                console.log(btn.className.baseVal.replace("btn-", "")); // por causa do SVg, tem o baseVal
-    
+            this.addEventListenerAll(btn, 'click drag', (event) => {
+                console.log(btn.className.baseVal.replace('btn-', '')); // por causa do SVg, tem o baseVal
             });
-            
-        });
 
+            this.addEventListenerAll(btn, 'mouseover mouseup mousedown', event => {
+                btn.style.cursor = 'pointer';
+            })
+        });
     }
 
     setDisplayDateTime() {
-
         this.displayDate = this.currentDate.toLocaleDateString(this._locale, {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
         });
 
         this.displayTime = this.currentDate.toLocaleTimeString(this._locale);
-
     }
 
     get displayTime() {
@@ -84,5 +80,4 @@ class CalcController {
     set currentDate(value) {
         this._currentDate = value;
     }
-
 }
