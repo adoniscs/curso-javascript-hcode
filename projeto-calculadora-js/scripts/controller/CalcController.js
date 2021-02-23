@@ -1,83 +1,149 @@
 class CalcController {
-    constructor() {
-        // method execute automaticamente
+  constructor() {
+    this._operation = [];
+    this._locale = "pt-BR";
+    this._displayCalcEl = document.querySelector("#display");
+    this._dateEl = document.querySelector("#data"); // ...El = Element
+    this._timeEl = document.querySelector("#hora"); // ...El = Element
+    this._buttons = this._currentDate;
+    this.initialize();
+    this.initButtonsEvents();
+  }
 
-        this._locale = 'pt-BR';
-        this._displayCalcEl = document.querySelector('#display');
-        this._dateEl = document.querySelector('#data');
-        this._timeEl = document.querySelector('#hora');
-        this._currentDate; // private
-        this.initialize();
-        this.initButtonsEvents();
+  // método para inicializar
+  initialize() {
+    this.setDisplayDateTime(); // chama o metétodo para iniciar
+
+    setInterval(() => {
+      this.setDisplayDateTime(); // chamando o método e atualizar os segundos
+    }, 1000);
+  }
+
+  // método para definir a hora e a data da calculadora
+  setDisplayDateTime() {
+    this.displayDate = this.currentDate.toLocaleDateString(this._locale, {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+    this.displayTime = this.currentDate.toLocaleTimeString(this._locale);
+  }
+
+  // metodo para adicionar mais de um evento no click do botão
+  addEventListenerAll(element, events, fn) {
+    events.split(" ").forEach((event) => {
+      element.addEventListener(event, fn, false);
+    });
+  }
+
+  // metodo para apagar tudo quando o AC for clicado
+  clearAll() {
+    this._operation = [];
+  }
+
+  // metodo para apagar a ultima entrada
+  clearEntry() {
+    this._operation.pop();
+  }
+
+  // metodo para adicionar uma entrada ao final
+  addOperation(value) {
+    this._operation.push(value);
+    console.log(this._operation);
+  }
+
+  // metodo para msg de erro caso nenhuma das opções seja válida
+  setError() {
+    this.displayCalc = "Error";
+  }
+
+  // metodo para execultar os botões
+  execBtn(value) {
+    switch (value) {
+      case "ac": // ac = all clear
+        this.clearAll();
+        break;
+      case "ce": // ce = cancel entry = ultima entrada
+        this.clearEntry();
+        break;
+      case "soma":
+        break;
+      case "subtracao":
+        break;
+      case "divisao":
+        break;
+      case "multiplicacao":
+        break;
+      case "porcento":
+        break;
+      case "igual":
+        break;
+
+      case "0":
+      case "1":
+      case "2":
+      case "3":
+      case "4":
+      case "5":
+      case "6":
+      case "7":
+      case "8":
+      case "9":
+        this.addOperation(parseInt(value));
+        break;
+
+      default:
+        this.setError();
+        break;
     }
+  }
 
-    initialize() {
-        this.setDisplayDateTime();
+  // método para iniciar evento dos botões
+  initButtonsEvents() {
+    let buttons = document.querySelectorAll("#buttons > g, #parts > g"); // pegar todas tags g filhos de buttons e parts
 
-        setInterval(() => {
-            this.setDisplayDateTime();
-        }, 1000);
-    }
+    buttons.forEach((btn, index) => {
+      this.addEventListenerAll(btn, "click drag", (event) => {
+        let textBtn = btn.className.baseVal.replace("btn-", ""); // baseVal é por causa do SVG
 
-    addEventListenerAll(element, event, fn) {
-        event.split(' ').forEach(event => {
-            element.addEventListener(event, fn, false);
-        });
-    }
+        this.execBtn(textBtn); // chama o método
+      });
 
-    initButtonsEvents() {
-        let buttons = document.querySelectorAll('#buttons > g, #parts > g');
+      this.addEventListenerAll(btn, "mouseover mouseup mousedown", (event) => {
+        btn.style.cursor = "pointer";
+      });
+    });
+  }
 
-        buttons.forEach((btn, index) => {
-            this.addEventListenerAll(btn, 'click drag', (event) => {
-                console.log(btn.className.baseVal.replace('btn-', '')); // por causa do SVg, tem o baseVal
-            });
+  get displayTime() {
+    return this._timeEl.innerHTML;
+  }
 
-            this.addEventListenerAll(btn, 'mouseover mouseup mousedown', event => {
-                btn.style.cursor = 'pointer';
-            })
-        });
-    }
+  set displayTime(value) {
+    return (this._timeEl.innerHTML = value);
+  }
 
-    setDisplayDateTime() {
-        this.displayDate = this.currentDate.toLocaleDateString(this._locale, {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric',
-        });
+  get displayDate() {
+    return this._dateEl.innerHTML;
+  }
 
-        this.displayTime = this.currentDate.toLocaleTimeString(this._locale);
-    }
+  set displayDate(value) {
+    return (this._dateEl.innerHTML = value);
+  }
 
-    get displayTime() {
-        return this._timeEl.innerHTML;
-    }
+  get displayCalc() {
+    return this._displayCalcEl.innerHTML;
+  }
 
-    set displayTime(value) {
-        this._timeEl.innerHTML = value;
-    }
+  set displayCalc(value) {
+    this._displayCalcEl.innerHTML = value;
+  }
 
-    get displayDate() {
-        return this._dateEl.innerHTML;
-    }
+  get currentDate() {
+    return new Date();
+  }
 
-    set displayDate(value) {
-        this._dateEl.innerHTML = value;
-    }
-
-    get displayCalc() {
-        return this._displayCalcEl.innerHTML;
-    }
-
-    set displayCalc(value) {
-        this._displayCalcEl.innerHTML = value;
-    }
-
-    get currentDate() {
-        return new Date();
-    }
-
-    set currentDate(value) {
-        this._currentDate = value;
-    }
+  set currentDate(value) {
+    this.currentDate = value;
+  }
 }
